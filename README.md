@@ -29,7 +29,7 @@ flowchart LR
 
 ## How to Run
 
-Deployed: *`https://mgt3745-hw4.YOUR-SUBDOMAIN.workers.dev/entries`*
+Deployed: *`https://mgt3745-hw4.nuhamin2234.workers.dev/entries`*
 
 From a fresh Codespace:
 
@@ -39,7 +39,7 @@ From a fresh Codespace:
 3. Paste the deployed URL into `app.js` as `API`.
 4. Right-click `index.html`, choose **Open with Live Server**.
 
-Run the code eval: `API=https://mgt3745-hw4.YOUR-SUBDOMAIN.workers.dev npm test`
+Run the code eval: `API=https://mgt3745-hw4.nuhamin2234.workers.dev npm test`
 
 ![npm test passing](docs/npm-test.png)
 
@@ -73,9 +73,9 @@ Reading order for a stranger: [PROJECT.md](context/PROJECT.md) →
 
 ## AI Use
 
-*Every delegation has a DDR under Delegation above. Hours spent on this assignment: ___.*
+*Every delegation has a DDR under Delegation above. Hours spent on this assignment: 10.*
 
 *Retired text: Three proto-DDR questions. What did the agent write? What did you check,
 and how? What could you not fully verify, and what did you do about it?
 For the Worker specifically: name the thing you could not fully inspect.
-Hours spent: ___.*
+Hours spent: 10.*
