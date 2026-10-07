@@ -61,3 +61,5 @@ li {
   gap: var(--space-unit);
 }
 li time { color: #777; font-size: 14px; white-space: nowrap; }
+li input { min-width: 0; }
+li button { padding: calc(var(--space-unit) / 2) var(--space-unit); font-size: 14px; }

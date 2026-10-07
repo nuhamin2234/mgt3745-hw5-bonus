@@ -8,7 +8,7 @@
     "db:export": "wrangler d1 export mgt3745-entries --remote --output=backup.sql",
     "dev": "wrangler dev",
     "deploy": "wrangler deploy",
-    "test": "node --test evals/"
+    "test": "node --test evals/*.test.js"
   },
   "devDependencies": {
     "wrangler": "^4"

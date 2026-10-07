@@ -15,7 +15,7 @@
 // HW4 Craft credit: replace "*" with your page's origin once it is deployed.
 const CORS = {
   "access-control-allow-origin": "*",
-  "access-control-allow-methods": "GET, POST, OPTIONS",
+  "access-control-allow-methods": "GET, POST, PUT, OPTIONS",
   "access-control-allow-headers": "content-type",
 };
 
@@ -71,6 +71,29 @@ async function handle(request, env) {
     await env.DB.prepare("INSERT INTO entries (text) VALUES (?)")
       .bind(body.text).run();
     return new Response(null, { status: 201, headers: CORS });
+  }
+
+  // E1: WHEN the user saves an edited note, THE SYSTEM SHALL update the stored text.
+  // E2: IF the edited text is empty, THEN THE SYSTEM SHALL reject it with a reason.
+  // E3: IF the note does not exist, THEN THE SYSTEM SHALL respond 404 with a reason.
+  const match = url.pathname.match(/^\/entries\/(\d+)$/);
+  if (request.method === "PUT" && match) {
+    let body;
+    try {
+      body = await request.json();
+    } catch {
+      return new Response("body must be JSON", { status: 400, headers: CORS });
+    }
+    const text = typeof body.text === "string" ? body.text.trim() : "";
+    if (!text) {
+      return new Response("text required", { status: 400, headers: CORS });
+    }
+    const result = await env.DB.prepare("UPDATE entries SET text = ? WHERE id = ?")
+      .bind(text, Number(match[1])).run();
+    if (!result.meta.changes) {
+      return new Response("entry not found", { status: 404, headers: CORS });
+    }
+    return new Response(null, { status: 204, headers: CORS });
   }
 
   return new Response("not found", { status: 404, headers: CORS });

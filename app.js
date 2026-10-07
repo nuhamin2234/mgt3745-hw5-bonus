@@ -5,7 +5,7 @@
 // those two lines, and that is what HW4 asks you to write down.
 
 // Paste your deployed Worker URL here after `npx wrangler deploy`.
-const API = "https://mgt3745-hw4.YOUR-SUBDOMAIN.workers.dev";
+const API = "https://mgt3745-hw4.nuhamin2234.workers.dev";
 
 // ---- HW3, for the record (superseded by ADR-002) ------------------------
 // function load()      { return JSON.parse(localStorage.getItem("entries") || "[]"); }
@@ -47,6 +47,49 @@ async function save(entry) {
   return true;
 }
 
+// E1/E2/E3: PUT the edited text. Returns true on success; on failure the
+// reason is shown on the page and the caller keeps the original text (E4).
+async function saveEdit(id, text) {
+  const res = await fetch(API + "/entries/" + id, {
+    method: "PUT",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ text }),
+  });
+  if (!res.ok) {
+    const reason = await res.text();
+    showError("could not save edit: " + (reason || res.status));
+    return false;
+  }
+  return true;
+}
+
+function startEdit(li, entry) {
+  const field = document.createElement("input");
+  field.value = entry.text;
+  field.setAttribute("aria-label", "Edit entry");
+  const saveBtn = document.createElement("button");
+  saveBtn.type = "button";
+  saveBtn.textContent = "Save";
+  const cancelBtn = document.createElement("button");
+  cancelBtn.type = "button";
+  cancelBtn.textContent = "Cancel";
+  li.replaceChildren(field, saveBtn, cancelBtn);
+  field.focus();
+
+  cancelBtn.addEventListener("click", () => { clearError(); refresh(); });
+  saveBtn.addEventListener("click", async () => {
+    clearError();
+    try {
+      // E4: on any failure the page re-renders from the server, so the
+      // original text stays visible and the error stays on screen.
+      const ok = await saveEdit(entry.id, field.value.trim());
+      if (ok) await refresh();
+    } catch {
+      showError("could not reach the server");
+    }
+  });
+}
+
 function render(entries) {
   // Unchanged from HW3. textContent, never innerHTML.
   // The server does not get to write HTML into your page either.
@@ -57,7 +100,11 @@ function render(entries) {
     text.textContent = entry.text;
     const when = document.createElement("time");
     when.textContent = entry.created_at || "";
-    li.append(text, when);
+    const editBtn = document.createElement("button");
+    editBtn.type = "button";
+    editBtn.textContent = "Edit";
+    editBtn.addEventListener("click", () => startEdit(li, entry));
+    li.append(text, when, editBtn);
     list.append(li);
   }
 }
